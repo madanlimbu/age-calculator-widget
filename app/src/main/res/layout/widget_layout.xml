@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="#55000000">
+
+    <TextView
+        android:id="@+id/age_in_widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Current Age"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:textStyle="italic"/>
+
+
+</FrameLayout>
