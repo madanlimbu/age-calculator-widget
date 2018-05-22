@@ -1,5 +1,7 @@
 package com.example.madan.ageing;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -45,27 +47,15 @@ public class MainActivity extends AppCompatActivity {
         DateStore storedob = new DateStore(getBaseContext());
         storedob.storeData(dob);
         this.result.setText(new AgeCalculator().calculateAge(dob));
+        Intent updateIntent = new Intent(getBaseContext(), WidgetProvider.class);
+        updateIntent.setAction(getBaseContext().getPackageName());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, updateIntent,0);
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
     }
 
-
-/* Old way to store in shared preference
-
-    //  SharedPreferences sharedPreferences;
-
-    //save dob to shared preference for later use in widget
-    public void saveDateToSharedPreferences(String date){
-        sharedPreferences = getSharedPreferences("StoreDob", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("dob", date);
-        editor.commit();
-    }
-
-    //get the dob last saved for widget use
-    public String getDateFromSharedPreferences(){
-        sharedPreferences = getSharedPreferences("StoreDob", Context.MODE_PRIVATE);
-        String dob = (sharedPreferences.getString("dob", ""));
-        return dob;
-    }
-*/
 
 }

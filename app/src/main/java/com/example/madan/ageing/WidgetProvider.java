@@ -3,6 +3,7 @@ package com.example.madan.ageing;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
@@ -11,10 +12,26 @@ import java.util.Random;
 
 public class WidgetProvider extends AppWidgetProvider {
 
+    //create a broadcast and if it is from out app then manually call onUpdate
+    //used when new date of birth is set to update dates in widget
+    @Override
+    public void onReceive(Context context, Intent intent){
+        super.onReceive(context, intent);
+        if(intent.getAction().equals(context.getPackageName())){
+
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), WidgetProvider.class.getName());
+            int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(thisAppWidget);
+
+            onUpdate(context, AppWidgetManager.getInstance(context), appWidgetIds);
+
+        }
+    }
+
+    //update the person age on every update call
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
-        System.out.println("Widget Provider onUpdate()");
-
+        DateStore storedob = new DateStore(context);
+        String age = new AgeCalculator().calculateAge(storedob.getData());
 
         final int count = appWidgetIds.length;
 
@@ -24,7 +41,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
-            remoteViews.setTextViewText(R.id.age_in_widget, number);
+            remoteViews.setTextViewText(R.id.age_in_widget, age + " Test auto update : "+ number);
 
             Intent intent = new Intent(context, WidgetProvider.class);
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
