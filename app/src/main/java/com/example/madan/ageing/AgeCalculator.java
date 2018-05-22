@@ -14,14 +14,18 @@ public class AgeCalculator {
 
     //calculate age using dateOfBirth, and current day using joda libary
     public String calculateAge(String dateOfBirth){
-        setIntDateOfBirthUsingString(dateOfBirth);
+        String age = "No Correct Date Of Birth Set Yet";
+        try {
+            setIntDateOfBirthUsingString(dateOfBirth);
 
-        LocalDate birthday = new LocalDate(this.birthYear, this.brithMonth, this.birthDay);
-        LocalDate now = new LocalDate();
+            LocalDate birthday = new LocalDate(this.birthYear, this.brithMonth, this.birthDay);
+            LocalDate now = new LocalDate();
 
-        Period period = new Period(birthday, now, PeriodType.yearMonthDay());
-        String age = period.getYears() + " years "+ period.getMonths() + " months "+ period.getDays() + " days ";
-
+            Period period = new Period(birthday, now, PeriodType.yearMonthDay());
+             age = period.getYears() + " years "+ period.getMonths() + " months "+ period.getDays() + " days ";
+        }catch (Exception e){
+            System.out.println(e);
+        }
         return age;
     }
 

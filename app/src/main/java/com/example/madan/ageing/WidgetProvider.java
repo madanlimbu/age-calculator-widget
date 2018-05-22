@@ -31,8 +31,10 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
         DateStore storedob = new DateStore(context);
-        String age = new AgeCalculator().calculateAge(storedob.getData());
-
+        String age = "No Correct Date Of Birth Set Yet";
+        if(storedob.getData()!="") {
+            age = new AgeCalculator().calculateAge(storedob.getData());
+        }
         final int count = appWidgetIds.length;
 
         for (int i = 0; i < count; i++) {
