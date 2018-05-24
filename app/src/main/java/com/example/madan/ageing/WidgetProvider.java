@@ -25,6 +25,10 @@ public class WidgetProvider extends AppWidgetProvider {
             onUpdate(context, AppWidgetManager.getInstance(context), appWidgetIds);
 
         }
+        if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED")){
+            //SET ALARAM
+
+        }
     }
 
     //update the person age on every update call
@@ -55,4 +59,6 @@ public class WidgetProvider extends AppWidgetProvider {
         }
 
     }
+
+
 }
