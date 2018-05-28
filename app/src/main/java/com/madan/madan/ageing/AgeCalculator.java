@@ -1,4 +1,4 @@
-package com.example.madan.ageing;
+package com.madan.madan.ageing;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -24,7 +24,6 @@ public class AgeCalculator {
             Period period = new Period(birthday, now, PeriodType.yearMonthDay());
              age = period.getYears() + " years "+ period.getMonths() + " months "+ period.getDays() + " days ";
         }catch (Exception e){
-            System.out.println(e);
         }
         return age;
     }

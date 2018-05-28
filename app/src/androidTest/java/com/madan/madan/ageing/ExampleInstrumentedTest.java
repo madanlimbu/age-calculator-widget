@@ -1,4 +1,4 @@
-package com.example.madan.ageing;
+package com.madan.madan.ageing;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

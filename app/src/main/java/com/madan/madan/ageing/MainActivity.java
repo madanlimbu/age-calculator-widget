@@ -1,26 +1,26 @@
-package com.example.madan.ageing;
+package com.madan.madan.ageing;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
       private Button saveDate; //button that saves the date of birth to shared peference
       private TextView dateOfBirth; //input of date of birth
       private TextView result; //calculation result from date of birth to current date
+      private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         setFields();
         setSaveDateListener();
@@ -28,11 +28,25 @@ public class MainActivity extends AppCompatActivity {
 
     //set the view field to a variable for later use
     public void setFields(){
+        Typeface font = Typeface.createFromAsset(getBaseContext().getAssets(), "mono.ttf");
+
+
         this.saveDate = (Button) findViewById(R.id.saveDate);
         this.dateOfBirth = (TextView) findViewById(R.id.date);
         this.result = (TextView) findViewById(R.id.result);
+        this.textView = (TextView) findViewById(R.id.textView);
+
+        if(!getDateOfBirth().equals("")){
+            this.dateOfBirth.setText(getDateOfBirth());
+        }
+
+        this.saveDate.setTypeface(font, Typeface.NORMAL);
+        this.dateOfBirth.setTypeface(font, Typeface.NORMAL);
+        this.result.setTypeface(font, Typeface.BOLD);
+        this.textView.setTypeface(font, Typeface.NORMAL);
+
+
         DateStore storedob = new DateStore(getBaseContext());
-        this.saveDate.setText(storedob.getData());
     }
 
     //set listener to button, on click
@@ -51,6 +65,16 @@ public class MainActivity extends AppCompatActivity {
         DateStore storedob = new DateStore(getBaseContext());
         storedob.storeData(dob);
         this.result.setText(new AgeCalculator().calculateAge(dob));
+        updateExistingWidgetDates();
+    }
+
+    public String getDateOfBirth(){
+        DateStore storedob = new DateStore(getBaseContext());
+        return storedob.getData();
+    }
+
+    //updates age of all widget currently opened by boardcasting for widgetprovider
+    public void updateExistingWidgetDates(){
         Intent updateIntent = new Intent(getBaseContext(), WidgetProvider.class);
         updateIntent.setAction(getBaseContext().getPackageName());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, updateIntent,0);
@@ -59,18 +83,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
-
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.AM_PM, Calendar.AM);
-
-        AlarmManager alarmManager = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 1000 * 60 * 60 * 24, pendingIntent);
     }
+
 
 
 }

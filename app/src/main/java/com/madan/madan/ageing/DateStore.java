@@ -1,4 +1,4 @@
-package com.example.madan.ageing;
+package com.madan.madan.ageing;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 public class DateStore {
 
     private Context mContext;
+
     //supply context of the activity
     public DateStore(Context context) {
         mContext = context;
