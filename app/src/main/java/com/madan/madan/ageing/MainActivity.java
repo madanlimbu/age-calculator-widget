@@ -10,6 +10,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class MainActivity extends AppCompatActivity {
       private Button saveDate; //button that saves the date of birth to shared peference
@@ -45,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         this.result.setTypeface(font, Typeface.BOLD);
         this.textView.setTypeface(font, Typeface.NORMAL);
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
+        this.dateOfBirth.setHint(dateFormat.format(date));
 
         DateStore storedob = new DateStore(getBaseContext());
     }
