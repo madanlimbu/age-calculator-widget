@@ -46,13 +46,15 @@ public class WidgetProvider extends AppWidgetProvider {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 1);
 
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
-                AlarmManager.RTC_WAKEUP,
+                AlarmManager.INTERVAL_DAY,
                 alarmIntent
         );
     }
@@ -119,7 +121,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
-            remoteViews.setTextViewText(R.id.age_in_widget, age );
+            remoteViews.setTextViewText(R.id.age_in_widget, age + Calendar.getInstance().getTimeInMillis());
 
           //  Intent intent = new Intent(context, WidgetProvider.class);
            // intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
