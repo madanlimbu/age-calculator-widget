@@ -37,7 +37,8 @@ public class WidgetProvider extends AppWidgetProvider {
     //creates alarm intent to go off at 12am
     public void createAlarmIntent(Context context){
 
-        Intent intent = new Intent(WidgetProvider.ACTION_AUTO_UPDATE_WIDGET);
+        Intent intent = new Intent(context, WidgetProvider.class);
+        intent.setAction(WidgetProvider.ACTION_AUTO_UPDATE_WIDGET);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(
                 context, 0, intent, 0
         );
@@ -46,17 +47,27 @@ public class WidgetProvider extends AppWidgetProvider {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 1);
+        calendar.set(Calendar.SECOND, 1);
+        calendar.set(Calendar.MILLISECOND, 0);
 
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+       if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+           alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+       }else{
+           alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                   calendar.getTimeInMillis(),
+                   alarmIntent);
+       }
+       /*
         alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY,
                 alarmIntent
         );
+*/
     }
 
     //Notification on update, with backward compability
@@ -133,6 +144,9 @@ public class WidgetProvider extends AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.age_in_widget, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
+
+        //need to re implement alaram every time it is updated
+        createAlarmIntent(context);
 
     }
 
