@@ -45,21 +45,21 @@ public class WidgetProvider extends AppWidgetProvider {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 1);
-        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.AM_PM, Calendar.AM);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
 
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-       if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
-           alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-       }else{
-           alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+        alarmManager.setInexactRepeating(
+                   AlarmManager.RTC_WAKEUP,
                    calendar.getTimeInMillis(),
-                   alarmIntent);
-       }
+                   AlarmManager.INTERVAL_DAY,
+                   alarmIntent
+           );
+
        /*
         alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
@@ -132,7 +132,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
-            remoteViews.setTextViewText(R.id.age_in_widget, age + Calendar.getInstance().getTimeInMillis());
+            remoteViews.setTextViewText(R.id.age_in_widget, age );
 
           //  Intent intent = new Intent(context, WidgetProvider.class);
            // intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
@@ -146,7 +146,7 @@ public class WidgetProvider extends AppWidgetProvider {
         }
 
         //need to re implement alaram every time it is updated
-        createAlarmIntent(context);
+      //  createAlarmIntent(context);
 
     }
 
