@@ -20,7 +20,14 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 
 import java.util.Calendar;
-import java.util.Random;
+
+interface Theme
+{
+    void setForegroundColor();
+    void setBackgroundColor();
+    int getBackgroundColor();
+    int getForegroundColor();
+}
 
 public class WidgetProvider extends AppWidgetProvider {
     public static String ACTION_AUTO_UPDATE_WIDGET = "ACTION_AUTO_UPDATE_WIDGET_AT_ZERO_AM";
@@ -118,6 +125,7 @@ public class WidgetProvider extends AppWidgetProvider {
     //update the person age on every widget when onupdate intent recived
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
+        System.out.println("Called update");
         DateStore storedob = new DateStore(context);
         String age = "Use App To Set Correct Date Of Birth";
         if(storedob.getData()!="") {
@@ -134,6 +142,25 @@ public class WidgetProvider extends AppWidgetProvider {
                     R.layout.widget_layout);
             remoteViews.setTextViewText(R.id.age_in_widget, age );
 
+            Theme property = new Theme(){
+                @Override
+                public void setForegroundColor() {
+
+                }
+
+                @Override
+                public void setBackgroundColor() {
+
+                }
+                public int getForegroundColor() {
+                    return Color.parseColor("#E1BEE7");
+                }
+                public int getBackgroundColor() {
+                    return Color.parseColor("#00BCD4");
+                }
+            };
+
+            setWidgetTheme(remoteViews, property);
           //  Intent intent = new Intent(context, WidgetProvider.class);
            // intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
@@ -147,6 +174,18 @@ public class WidgetProvider extends AppWidgetProvider {
 
         //need to re implement alaram every time it is updated
       //  createAlarmIntent(context);
+
+    }
+
+    /**
+     * Function to update widget theming with custom settings.
+     *
+     * @param remoteViews
+     * @param property
+     */
+    public void setWidgetTheme(RemoteViews remoteViews, Theme property){
+        remoteViews.setInt(R.id.age_in_widget, "setBackgroundColor", property.getBackgroundColor());
+        remoteViews.setTextColor(R.id.age_in_widget, property.getForegroundColor());
 
     }
 
