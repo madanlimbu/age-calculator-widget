@@ -9,18 +9,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
-
 import java.util.Calendar;
-import java.util.Random;
+
 
 public class WidgetProvider extends AppWidgetProvider {
     public static String ACTION_AUTO_UPDATE_WIDGET = "ACTION_AUTO_UPDATE_WIDGET_AT_ZERO_AM";
@@ -59,18 +54,9 @@ public class WidgetProvider extends AppWidgetProvider {
                    AlarmManager.INTERVAL_DAY,
                    alarmIntent
            );
-
-       /*
-        alarmManager.setInexactRepeating(
-                AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY,
-                alarmIntent
-        );
-*/
     }
 
-    //Notification on update, with backward compability
+    //Notification on update, with backward compatibility.
     public void createNotification(Context context, String age){
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -115,7 +101,7 @@ public class WidgetProvider extends AppWidgetProvider {
         }
     }
 
-    //update the person age on every widget when onupdate intent recived
+    //Update the person age on every widget when onupdate intent received.
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
         DateStore storedob = new DateStore(context);
@@ -124,30 +110,43 @@ public class WidgetProvider extends AppWidgetProvider {
             age = new AgeCalculator().calculateAge(storedob.getData());
         }
 
+        //Set custom property for the widget before they are applied.
+        WidgetTheme property = new WidgetTheme();
+        if (!storedob.getBackgroundColor().isEmpty()) {
+            property.setBackgroundColor(storedob.getBackgroundColor());
+        }
+        if (!storedob.getForegroundColor().isEmpty()) {
+            property.setForegroundColor(storedob.getForegroundColor());
+        }
+
         createNotification(context, age);
         final int count = appWidgetIds.length;
 
+        // Update all the instance of widget.
         for (int i = 0; i < count; i++) {
             int widgetId = appWidgetIds[i];
 
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                    R.layout.widget_layout);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             remoteViews.setTextViewText(R.id.age_in_widget, age );
 
-          //  Intent intent = new Intent(context, WidgetProvider.class);
-           // intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+            setWidgetTheme(remoteViews, property); //Set the color to each of the widgets
+
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            //PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-             //       0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.age_in_widget, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
+    }
 
-        //need to re implement alaram every time it is updated
-      //  createAlarmIntent(context);
-
+    /**
+     * Function to update widget theme with custom settings.
+     *
+     * @param remoteViews
+     * @param property
+     */
+    public void setWidgetTheme(RemoteViews remoteViews, Theme property){
+        remoteViews.setInt(R.id.age_in_widget, "setBackgroundColor", Color.parseColor(property.getBackgroundColor()));
+        remoteViews.setTextColor(R.id.age_in_widget, Color.parseColor(property.getForegroundColor()));
     }
 
 

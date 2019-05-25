@@ -14,50 +14,75 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class MainActivity extends AppCompatActivity {
       private Button saveDate; //button that saves the date of birth to shared peference
       private TextView dateOfBirth; //input of date of birth
       private TextView result; //calculation result from date of birth to current date
       private TextView textView;
+      private TextView backgroundColor;
+      private DateStore db;
+      private TextView foregroundColor;
+      private TextView helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        setDb();
         setFields();
         setSaveDateListener();
     }
 
-    //set the view field to a variable for later use
+    /**
+     * Set the view field to a variable for later use.
+     *
+     */
     public void setFields(){
-        Typeface font = Typeface.createFromAsset(getBaseContext().getAssets(), "mono.ttf");
-
-
         this.saveDate = (Button) findViewById(R.id.saveDate);
         this.dateOfBirth = (TextView) findViewById(R.id.date);
         this.result = (TextView) findViewById(R.id.result);
         this.textView = (TextView) findViewById(R.id.textView);
+        this.backgroundColor = (TextView) findViewById(R.id.backgroundColor);
+        this.foregroundColor = (TextView) findViewById(R.id.foregroundColor);
+        this.helper = (TextView) findViewById(R.id.helper);
 
-        if(!getDateOfBirth().equals("")){
-            this.dateOfBirth.setText(getDateOfBirth());
-        }
-
-        this.saveDate.setTypeface(font, Typeface.NORMAL);
-        this.dateOfBirth.setTypeface(font, Typeface.NORMAL);
-        this.result.setTypeface(font, Typeface.BOLD);
-        this.textView.setTypeface(font, Typeface.NORMAL);
+        setSettingsFromDB();
+        setFontStyle();
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
-
         this.dateOfBirth.setHint(dateFormat.format(date));
-
-        DateStore storedob = new DateStore(getBaseContext());
     }
 
-    //set listener to button, on click
+    /**
+     * Database connector initialise.
+     *
+     */
+    public void setDb() {
+        this.db = new DateStore(getBaseContext());
+    }
+
+    /**
+     * Set Setting from the database.
+     *
+     */
+    public void setSettingsFromDB() {
+        if(!db.getData().equals("")){
+            this.dateOfBirth.setText(db.getData());
+        }
+        if (!(db.getBackgroundColor() == "")) {
+            this.backgroundColor.setText(db.getBackgroundColor());
+        }
+        if (!(db.getForegroundColor() == "")) {
+            this.foregroundColor.setText(db.getForegroundColor());
+        }
+    }
+
+    /**
+     * Set listener to button, on click.
+     *
+     */
     public void setSaveDateListener(){
         this.saveDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,21 +92,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //when save button clicked, save the date of birth in shared preference for later use in widget
+    /**
+     *  When save button clicked, save the dob and settings in shared preference for later use in widget.
+     *
+     */
     public void saveDateOfBirth(){
         String dob =  this.dateOfBirth.getText().toString();
+        String bg = this.backgroundColor.getText().toString();
+        String fg = this.foregroundColor.getText().toString();
+
         DateStore storedob = new DateStore(getBaseContext());
         storedob.storeData(dob);
+        storedob.storeBackgroundColor(bg);
+        storedob.storeForegroundColor(fg);
+
         this.result.setText(new AgeCalculator().calculateAge(dob));
         updateExistingWidgetDates();
     }
 
-    public String getDateOfBirth(){
-        DateStore storedob = new DateStore(getBaseContext());
-        return storedob.getData();
-    }
-
-    //updates age of all widget currently opened by boardcasting for widgetprovider
+    /**
+     * Updates age of all widget currently opened by boardcasting for widgetprovider.
+     *
+     */
     public void updateExistingWidgetDates(){
         Intent updateIntent = new Intent(getBaseContext(), WidgetProvider.class);
         updateIntent.setAction(getBaseContext().getPackageName());
@@ -93,6 +125,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
+    /**
+     * Style the font.
+     *
+     */
+    public void setFontStyle() {
+        Typeface font = Typeface.createFromAsset(getBaseContext().getAssets(), "mono.ttf");
+        this.saveDate.setTypeface(font, Typeface.NORMAL);
+        this.dateOfBirth.setTypeface(font, Typeface.NORMAL);
+        this.result.setTypeface(font, Typeface.BOLD);
+        this.textView.setTypeface(font, Typeface.NORMAL);
+        this.backgroundColor.setTypeface(font, Typeface.NORMAL);
+        this.foregroundColor.setTypeface(font, Typeface.NORMAL);
+        this.helper.setTypeface(font, Typeface.NORMAL);
+    }
 }
