@@ -3,7 +3,9 @@ package com.madan.madan.ageing;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -117,7 +119,17 @@ public class MainActivity extends AppCompatActivity {
     public void updateExistingWidgetDates(){
         Intent updateIntent = new Intent(getBaseContext(), WidgetProvider.class);
         updateIntent.setAction(getBaseContext().getPackageName());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, updateIntent,0);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, updateIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
+                    0, updateIntent,
+                    PendingIntent.FLAG_MUTABLE);
+        }else {
+            pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
+                    0, updateIntent,
+                    0);
+        }
         try {
             pendingIntent.send();
         } catch (PendingIntent.CanceledException e) {

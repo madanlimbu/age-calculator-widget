@@ -11,8 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 import java.util.Calendar;
 
@@ -132,7 +132,17 @@ public class WidgetProvider extends AppWidgetProvider {
             setWidgetTheme(remoteViews, property); //Set the color to each of the widgets
 
             Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent pendingIntent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getBroadcast(context,
+                        0, intent,
+                        PendingIntent.FLAG_MUTABLE);
+            }else {
+                pendingIntent = PendingIntent.getBroadcast(context,
+                        0, intent,
+                        0);
+            }
             remoteViews.setOnClickPendingIntent(R.id.age_in_widget, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
