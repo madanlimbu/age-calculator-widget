@@ -1,22 +1,20 @@
 package com.madan.madan.ageing;
 
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.graphics.Typeface;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+      public static String AGE_REMINDER_UPDATE_WIDGET = "com.madan.madan.ageing.AGE_REMINDER_UPDATE_WIDGET";
+      public static String AGE_REMINDER_ZERO_AM = "com.madan.madan.ageing.AGE_REMINDER_ZERO_AM";
+
       private Button saveDate; //button that saves the date of birth to shared peference
       private TextView dateOfBirth; //input of date of birth
       private TextView result; //calculation result from date of birth to current date
@@ -109,32 +107,13 @@ public class MainActivity extends AppCompatActivity {
         storedob.storeForegroundColor(fg);
 
         this.result.setText(new AgeCalculator().calculateAge(dob));
-        updateExistingWidgetDates();
-    }
 
-    /**
-     * Updates age of all widget currently opened by boardcasting for widgetprovider.
-     *
-     */
-    public void updateExistingWidgetDates(){
-        Intent updateIntent = new Intent(getBaseContext(), WidgetProvider.class);
-        updateIntent.setAction(getBaseContext().getPackageName());
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, updateIntent, PendingIntent.FLAG_IMMUTABLE);
-        PendingIntent pendingIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
-                    0, updateIntent,
-                    PendingIntent.FLAG_MUTABLE);
-        }else {
-            pendingIntent = PendingIntent.getBroadcast(getBaseContext(),
-                    0, updateIntent,
-                    0);
-        }
-        try {
-            pendingIntent.send();
-        } catch (PendingIntent.CanceledException e) {
-            e.printStackTrace();
-        }
+        Notification n = new Notification(getBaseContext());
+        n.createNotification();
+
+        AlarmReceiver ar = new AlarmReceiver();
+        ar.updateWidgets(getBaseContext());
+        ar.createAlarmIntent(getBaseContext());
     }
 
     /**

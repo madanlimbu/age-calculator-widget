@@ -3,7 +3,10 @@ package com.madan.madan.ageing;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-//Class to save date of birth in shared preference using context package name as identifier
+/**
+ * Class to save date of birth in shared preference using context package name as identifier
+ *
+ */
 public class DateStore {
 
     private Context mContext;
