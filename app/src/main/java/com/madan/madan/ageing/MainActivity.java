@@ -1,7 +1,12 @@
 package com.madan.madan.ageing;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -32,6 +37,16 @@ public class MainActivity extends AppCompatActivity {
         setDb();
         setFields();
         setSaveDateListener();
+        this.getNotificationPermission();
+    }
+
+    public void getNotificationPermission() {
+        if (Build.VERSION.SDK_INT > 33) {
+//            if (!shouldShowRequestPermissionRationale("112")) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.POST_NOTIFICATIONS }, 112);
+            }
+        }
     }
 
     /**
@@ -114,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         AlarmReceiver ar = new AlarmReceiver();
         ar.updateWidgets(getBaseContext());
         ar.createAlarmIntent(getBaseContext());
+
+        this.getNotificationPermission();
     }
 
     /**

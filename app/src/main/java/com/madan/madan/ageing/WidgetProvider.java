@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 
@@ -17,8 +16,6 @@ public class WidgetProvider extends AppWidgetProvider {
     //WHEN WIDGET CREATED/OPENED
     @Override
     public void onEnabled(Context context){
-        Log.d("WidgetProvider", "Enabled widget.");
-
         super.onEnabled(context);
     }
 
