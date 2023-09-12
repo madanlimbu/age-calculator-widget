@@ -23,16 +23,15 @@ public class AgeCalculator {
      * @return
      */
     public String calculateAge(String dateOfBirth){
-        String age = "No Correct Date Of Birth Set Yet";
+        String age = "No Correct Date Of Birth Set Yet (YYYY-MM-DD)";
         try {
             setIntDateOfBirthUsingString(dateOfBirth);
-
             LocalDate birthday = new LocalDate(this.birthYear, this.brithMonth, this.birthDay);
             LocalDate now = new LocalDate();
-
             Period period = new Period(birthday, now, PeriodType.yearMonthDay());
-             age = period.getYears() + " years "+ period.getMonths() + " months "+ period.getDays() + " days ";
-        }catch (Exception e){
+            age = period.getYears() + " years "+ period.getMonths() + " months "+ period.getDays() + " days ";
+        } catch (Exception e){
+            return age;
         }
         return age;
     }
@@ -48,5 +47,4 @@ public class AgeCalculator {
         this.brithMonth = Integer.parseInt(dates[1]);
         this.birthDay = Integer.parseInt(dates[2]);
     }
-
 }

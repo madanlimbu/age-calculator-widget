@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.madan.madan.ageing">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.SET_ALARM"/>
@@ -14,20 +17,16 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         >
 
-
-
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
-
-
-        <receiver android:enabled="true" android:name=".WidgetProvider">
+        <receiver android:enabled="true" android:name=".WidgetProvider"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -35,10 +34,20 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
             <intent-filter>
-                <action android:name="ACTION_AUTO_UPDATE_WIDGET_AT_ZERO_AM" />
+                <action android:name="com.madan.madan.ageing.AGE_REMINDER_UPDATE_WIDGET" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_info" />
+        </receiver>
+
+        <receiver android:enabled="true" android:name=".AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.madan.madan.ageing.AGE_REMINDER_ZERO_AM" />
+            </intent-filter>
         </receiver>
 
     </application>
